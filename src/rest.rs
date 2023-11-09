@@ -1,5 +1,5 @@
-use super::Ctx;
 use super::COUNTER;
+use crate::app::Ctx;
 use thruster::{middleware_fn, MiddlewareNext, MiddlewareResult};
 
 // 5
