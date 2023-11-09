@@ -1,6 +1,7 @@
 use super::COUNTER;
 use crate::app::Ctx;
-use thruster::{middleware_fn, MiddlewareNext, MiddlewareResult};
+use crate::png::draw_png;
+use thruster::{middleware_fn, Context, MiddlewareNext, MiddlewareResult};
 
 // 5
 #[middleware_fn]
@@ -15,7 +16,10 @@ pub async fn ghstat(mut context: Ctx, _next: MiddlewareNext<Ctx>) -> MiddlewareR
 
     println!("Count: {}", c);
 
-    context.body("Hello, world!");
+    context.set("Content-Type", "image/png");
+    // return png image
+    let buffer = draw_png(c).unwrap();
+    context.set_body_bytes(buffer.try_into().unwrap());
 
     Ok(context)
 }

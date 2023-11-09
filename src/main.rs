@@ -4,6 +4,7 @@ use thruster::{hyper_server::HyperServer, ThrusterServer};
 mod app;
 mod counter;
 mod rest;
+mod png;
 
 #[macro_use]
 pub extern crate lazy_static;
