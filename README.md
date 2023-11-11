@@ -2,6 +2,10 @@
 
 https://freeyeti.net/api/ghstat/v1/s.png
 
+```
+DATA_DIR=
+```
+
 - `cargo run`
 
 ```bash
