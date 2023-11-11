@@ -1,5 +1,4 @@
 use log::info;
-use std::time::Duration;
 use thruster::{hyper_server::HyperServer, ThrusterServer};
 
 mod app;
@@ -7,6 +6,7 @@ mod counter;
 mod fileutil;
 mod png;
 mod rest;
+mod task;
 
 #[macro_use]
 pub extern crate lazy_static;
@@ -22,16 +22,7 @@ async fn main() {
     env_logger::init();
     info!("Starting server...");
 
-    tokio::spawn(async move {
-        loop {
-            {
-                tokio::time::sleep(Duration::from_secs(60)).await;
-                let counter = COUNTER.lock().await;
-                fileutil::write_count("counter.txt", counter.get_count());
-                println!("Saved count: {}", counter.get_count());
-            }
-        }
-    });
+    task::save_count();
 
     fileutil::create_file("counter.txt", "0");
     fileutil::create_file("log.txt", "");
