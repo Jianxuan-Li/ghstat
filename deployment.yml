@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freeyeti-ghstat-api
+  labels:
+    app: freeyeti-ghstat-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freeyeti-ghstat-api
+  template:
+    metadata:
+      labels:
+        app: freeyeti-ghstat-api
+    spec:
+      containers:
+        - name: freeyeti-ghstat-api
+          image: freeyeti/ghstat:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
