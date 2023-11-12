@@ -5,6 +5,7 @@ mod app;
 mod counter;
 mod fileutil;
 mod png;
+mod queue;
 mod rest;
 mod task;
 
@@ -15,6 +16,7 @@ use tokio::sync::Mutex;
 lazy_static! {
     pub static ref COUNTER: Mutex<counter::Counter> =
         Mutex::new(counter::Counter::new("counter.txt"));
+    pub static ref LOG_QUEUE: Mutex<queue::LogQueue> = Mutex::new(queue::LogQueue::new());
 }
 
 #[tokio::main]
@@ -23,6 +25,7 @@ async fn main() {
     info!("Starting server...");
 
     task::save_count();
+    task::save_log();
 
     fileutil::create_file("counter.txt", "0");
     fileutil::create_file("log.txt", "");

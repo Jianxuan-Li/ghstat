@@ -1,5 +1,6 @@
 use std::{
     env,
+    io::Write,
     path::{Path, PathBuf},
 };
 
@@ -26,4 +27,17 @@ pub fn read_count(file_name: &str) -> Result<i32, std::num::ParseIntError> {
 pub fn write_count(file_name: &str, count: i32) {
     let path = create_path(file_name);
     std::fs::write(path, count.to_string()).expect("Unable to write file");
+}
+
+pub fn append_logs(file_name: &str, logs: Vec<String>) {
+    let path = create_path(file_name);
+    // append to log file
+    let mut file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .expect("Unable to open file");
+    file.write_all(logs.join("\n").as_bytes())
+        .expect("Unable to write file");
+    file.sync_all().expect("Unable to sync file");
 }
