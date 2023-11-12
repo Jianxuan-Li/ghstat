@@ -24,14 +24,16 @@ async fn main() {
     env_logger::init();
     info!("Starting server...");
 
-    task::save_count();
-    task::save_log();
-
+    // create files if not exist
     fileutil::create_file("counter.txt", "0");
     fileutil::create_file("log.txt", "");
 
-    let app = app::app().await.expect("Could not create app");
+    // active tasks in other threads
+    task::save_count();
+    task::save_log();
 
+    // create app
+    let app = app::app().await.expect("Could not create app");
     let server = HyperServer::new(app);
     println!("Listening on http://0.0.0.0:3000");
     server.build("0.0.0.0", 3000).await;
