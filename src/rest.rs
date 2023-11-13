@@ -41,6 +41,9 @@ pub async fn ghstat(mut context: Ctx, _next: MiddlewareNext<Ctx>) -> MiddlewareR
     // set response header
     context.remove("server");
     context.set("Content-Type", "image/png");
+    // disable cache
+    context.set("Cache-Control", "no-cache, no-store, must-revalidate");
+
     // return png image
     let buffer = draw_png(c).unwrap();
     context.set_body_bytes(buffer.try_into().unwrap());
