@@ -2,12 +2,14 @@ use crate::fileutil;
 
 pub struct Counter {
     count: i32,
+    prev_count: i32,
 }
 
 impl Counter {
     pub fn new(counter_file: &str) -> Self {
         Counter {
             count: fileutil::read_count(counter_file).unwrap_or(0),
+            prev_count: -1,
         }
     }
 
@@ -17,6 +19,14 @@ impl Counter {
 
     pub fn get_count(&self) -> i32 {
         self.count
+    }
+
+    pub fn get_prev_count(&self) -> i32 {
+        self.prev_count
+    }
+
+    pub fn set_prev_count(&mut self, prev_count: i32) {
+        self.prev_count = prev_count;
     }
 }
 

@@ -8,9 +8,17 @@ pub fn save_count() {
         loop {
             {
                 tokio::time::sleep(Duration::from_secs(60)).await;
-                let counter = COUNTER.lock().await;
-                fileutil::write_count("counter.txt", counter.get_count());
-                println!("Saved count: {}", counter.get_count());
+                let mut counter = COUNTER.lock().await;
+                let curr_count = counter.get_count();
+
+                if curr_count == counter.get_prev_count() {
+                    // prevent IO if count is not changed
+                    continue;
+                }
+
+                counter.set_prev_count(curr_count);
+                fileutil::write_count("counter.txt", curr_count);
+                println!("Saved count: {}", curr_count);
             }
         }
     });
@@ -22,6 +30,12 @@ pub fn save_log() {
             {
                 tokio::time::sleep(Duration::from_secs(60)).await;
                 let mut log_queue = LOG_QUEUE.lock().await;
+
+                if log_queue.size() == 0 {
+                    // prevent IO if log queue is empty
+                    continue;
+                }
+
                 let mut logs = Vec::new();
                 while let Some(log) = log_queue.pop() {
                     logs.push(log);
