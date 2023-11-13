@@ -16,7 +16,7 @@ fn generate_context(request: HyperRequest, _state: &ServerConfig, _path: &str) -
 
 pub async fn app() -> Result<App<HyperRequest, Ctx, ServerConfig>, Box<dyn std::error::Error>> {
     let app = App::<HyperRequest, Ctx, ServerConfig>::create(generate_context, ServerConfig {})
-        .get("/v1/s.png", m![ghstat]);
+        .get("/v1/s", m![ghstat]);
 
     Ok(app)
 }
