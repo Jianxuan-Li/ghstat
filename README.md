@@ -1,5 +1,21 @@
 # ghstat
 
+## Instruction
+
+This project is to test the performance of rust. the metrics is memory usage, cpu usage, and I/O usage.
+
+## Conclusion
+
+Rust is a good language to write a high performance program. Especially for computing intensive program. For I/O operation, using tokio as the async runtime is a good choice.
+
+- performance
+
+![performance](plot.png)
+
+[https://github.com/Jianxuan-Li/rust-draw-image-test](https://github.com/Jianxuan-Li/rust-draw-image-test)
+
+## Development
+
 https://freeyeti.net/backend/ghstat/v1/s
 
 ```
@@ -13,13 +29,7 @@ docker build -t freeyeti/ghstat:latest .
 docker push freeyeti/ghstat:latest
 ```
 
-* performance
-
-![performance](plot.png)
-
-[https://github.com/Jianxuan-Li/rust-draw-image-test](https://github.com/Jianxuan-Li/rust-draw-image-test)
-
-* clear image cache of github
+- clear image cache of github
 
 ```bash
 #!/bin/bash
