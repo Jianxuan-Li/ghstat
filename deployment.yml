@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: freeyeti-ghstat-api
-          image: freeyeti/ghstat:v0.1.3
+          image: freeyeti/ghstat:v0.1.4
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
