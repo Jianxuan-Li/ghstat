@@ -16,7 +16,8 @@ Rust is a good language to write a high performance program. Especially for comp
 
 ## Development
 
-https://freeyeti.net/backend/ghstat/v1/s
+* https://freeyeti.net/backend/ghstat/v1/s
+* https://freeyeti.net/backend/ghstat/v1/e
 
 ```
 DATA_DIR=
