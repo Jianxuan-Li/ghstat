@@ -6,6 +6,32 @@ use thruster::{
     middleware::cookies::HasCookies, middleware_fn, Context, MiddlewareNext, MiddlewareResult,
 };
 
+fn get_log_str(context: &Ctx, c: i32) -> String {
+    // get ip address, user agent, and referer from request header
+    let user_agent = context
+        .get_header("user-agent")
+        .pop()
+        .unwrap_or_else(|| "".to_string());
+    let referer = context
+        .get_header("referer")
+        .pop()
+        .unwrap_or_else(|| "".to_string());
+    let ip = context
+        .get_header("x-forwarded-for")
+        .pop()
+        .unwrap_or_else(|| "".to_string());
+    let current_time_str = chrono::Local::now().to_string();
+    let host = context
+        .get_header("host")
+        .pop()
+        .unwrap_or_else(|| "".to_string());
+
+    format!(
+        "{}\t{}\t{}\t{}\t{}\t{}",
+        host, current_time_str, ip, user_agent, referer, c
+    )
+}
+
 #[middleware_fn]
 pub async fn ghstat(mut context: Ctx, _next: MiddlewareNext<Ctx>) -> MiddlewareResult<Ctx> {
     let c: i32;
@@ -15,27 +41,10 @@ pub async fn ghstat(mut context: Ctx, _next: MiddlewareNext<Ctx>) -> MiddlewareR
         counter.increment();
         c = counter.get_count();
 
-        // get ip address, user agent, and referer from request header
-        let user_agent = context
-            .get_header("user-agent")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-        let referer = context
-            .get_header("referer")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-        let ip = context
-            .get_header("x-forwarded-for")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-        let current_time_str = chrono::Local::now().to_string();
-        let log_str = format!(
-            "{}\t{}\t{}\t{}\t{}",
-            current_time_str, ip, user_agent, referer, c
-        );
+        let log_str = get_log_str(&context, c);
         println!("{}", log_str);
 
-        LOG_QUEUE.lock().await.push(log_str);
+        LOG_QUEUE.lock().await.push(log_str + "\n");
     }
 
     // set response header
@@ -60,37 +69,15 @@ pub async fn estat(mut context: Ctx, _next: MiddlewareNext<Ctx>) -> MiddlewareRe
         counter.increment();
         c = counter.get_count();
 
-        // get ip address, user agent, and referer from request header
-        let user_agent = context
-            .get_header("user-agent")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-        let referer = context
-            .get_header("referer")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-        let ip = context
-            .get_header("x-forwarded-for")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-        let current_time_str = chrono::Local::now().to_string();
-        let host = context
-            .get_header("host")
-            .pop()
-            .unwrap_or_else(|| "".to_string());
-
-        let log_str = format!(
-            "{}\t{}\t{}\t{}\t{}\t{}",
-            host, current_time_str, ip, user_agent, referer, c
-        );
+        let log_str = get_log_str(&context, c);
         println!("{}", log_str);
 
-        LOG_QUEUE.lock().await.push(log_str);
+        LOG_QUEUE.lock().await.push(log_str + "\n");
     }
 
     context.remove("server");
     context.set("Cache-Control", "no-cache, no-store, must-revalidate");
-    
+
     // return json with counter
     let content = format!("{{\"count\":{}}}", &c);
     context.body(&content);

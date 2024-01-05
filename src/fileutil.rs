@@ -37,7 +37,7 @@ pub fn append_logs(file_name: &str, logs: Vec<String>) {
         .append(true)
         .open(path)
         .expect("Unable to open file");
-    file.write_all(logs.join("\n").as_bytes())
+    file.write_all(logs.join("").as_bytes())
         .expect("Unable to write file");
     file.sync_all().expect("Unable to sync file");
 }
