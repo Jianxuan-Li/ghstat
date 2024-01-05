@@ -461,7 +461,7 @@ dependencies = [
 
 [[package]]
 name = "ghstat"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "chrono",
  "env_logger",
